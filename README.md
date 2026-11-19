@@ -4,7 +4,8 @@
 
 ## 🔗 App en vivo
 
-> _Se agregará el enlace al publicar en T11._
+- **Backend (API REST en Render)**: [https://study-organization.onrender.com](https://study-organization.onrender.com)
+- **Endpoint de verificación**: [https://study-organization.onrender.com/health](https://study-organization.onrender.com/health)
 
 ## 📋 Descripción
 

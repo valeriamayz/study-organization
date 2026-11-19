@@ -14,7 +14,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: —
 - **Dependencias**: ninguna
 - **Criterio de terminado**: `npm run dev` levanta el frontend en `localhost:5173`; `node src/index.js` levanta el backend en `localhost:3000` y responde `{ ok: true }` en `GET /health`.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -25,7 +25,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: RN01, RN04, RN11, RN19
 - **Dependencias**: T01
 - **Criterio de terminado**: el backend levanta, crea las tablas automáticamente al iniciar, y los datos de ejemplo se cargan si la base está vacía.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -36,7 +36,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: —
 - **Dependencias**: T01
 - **Criterio de terminado**: existe una página de muestra (`/design`) donde se ven todos los componentes con la paleta definida.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -47,7 +47,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: RN01, RN02, RN03 · HU01, HU02, HU03
 - **Dependencias**: T02, T03
 - **Criterio de terminado**: todos los tests pasan; se puede crear, editar y eliminar una materia desde el navegador.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 

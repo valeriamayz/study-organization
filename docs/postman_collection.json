@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "Study Organization API",
+    "description": "Colección de pruebas de endpoints para el proyecto Study Organization",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+      }
+    },
+    {
+      "name": "Materias",
+      "item": [
+        {
+          "name": "Listar Materias",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/materias" }
+        },
+        {
+          "name": "Crear Materia",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Bases de Datos\",\n  \"color\": \"#A9D6F5\"\n}" },
+            "url": "{{baseUrl}}/api/materias"
+          }
+        },
+        {
+          "name": "Actualizar Materia",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Bases de Datos Avanzadas\",\n  \"color\": \"#A8E6C3\"\n}" },
+            "url": "{{baseUrl}}/api/materias/1"
+          }
+        },
+        {
+          "name": "Eliminar Materia",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/materias/1" }
+        }
+      ]
+    },
+    {
+      "name": "Evaluaciones",
+      "item": [
+        {
+          "name": "Listar Todas",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/evaluaciones" }
+        },
+        {
+          "name": "Listar Próximas (14 días)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/evaluaciones?proximas=true&dias=14" }
+        },
+        {
+          "name": "Crear Evaluación",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"materia_id\": 1,\n  \"titulo\": \"Examen Final\",\n  \"fecha\": \"2026-12-15\",\n  \"tipo\": \"Examen\",\n  \"estado\": \"Pendiente\",\n  \"notas\": \"Temas 1 al 8\"\n}" },
+            "url": "{{baseUrl}}/api/evaluaciones"
+          }
+        },
+        {
+          "name": "Actualizar Evaluación",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Listo\"\n}" },
+            "url": "{{baseUrl}}/api/evaluaciones/1"
+          }
+        },
+        {
+          "name": "Eliminar Evaluación",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/evaluaciones/1" }
+        }
+      ]
+    },
+    {
+      "name": "Tareas",
+      "item": [
+        {
+          "name": "Listar Tareas",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/tareas" }
+        },
+        {
+          "name": "Crear Tarea",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Comprar cuadernillo\",\n  \"prioridad\": \"Alta\",\n  \"fecha_limite\": \"2026-11-25\"\n}" },
+            "url": "{{baseUrl}}/api/tareas"
+          }
+        },
+        {
+          "name": "Toggle Completar Tarea",
+          "request": { "method": "PATCH", "url": "{{baseUrl}}/api/tareas/1/toggle" }
+        },
+        {
+          "name": "Eliminar Tarea",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/tareas/1" }
+        }
+      ]
+    },
+    {
+      "name": "Notas",
+      "item": [
+        {
+          "name": "Listar Notas de Materia",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/notas?materia_id=1" }
+        },
+        {
+          "name": "Crear Nota",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"materia_id\": 1,\n  \"titulo\": \"Resumen Unidad 1\",\n  \"contenido\": \"Conceptos principales de normalización.\"\n}" },
+            "url": "{{baseUrl}}/api/notas"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Obtener Resumen General",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard" }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" }
+  ]
+}

@@ -18,7 +18,16 @@ app.use(express.json())
 
 // Rutas
 const materiasRouter = require('./routes/materias')
+const evaluacionesRouter = require('./routes/evaluaciones')
+const tareasRouter = require('./routes/tareas')
+const notasRouter = require('./routes/notas')
+const dashboardRouter = require('./routes/dashboard')
+
 app.use('/api/materias', materiasRouter)
+app.use('/api/evaluaciones', evaluacionesRouter)
+app.use('/api/tareas', tareasRouter)
+app.use('/api/notas', notasRouter)
+app.use('/api/dashboard', dashboardRouter)
 
 // Ruta de prueba
 app.get('/health', (req, res) => {

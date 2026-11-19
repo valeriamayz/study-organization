@@ -58,7 +58,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: RN04–RN10 · HU04, HU05, HU06
 - **Dependencias**: T04
 - **Criterio de terminado**: todos los tests pasan; se puede crear y editar una evaluación, cambiar su estado, y ver el historial.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -69,7 +69,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: RN11–RN16 · HU07, HU08
 - **Dependencias**: T04
 - **Criterio de terminado**: todos los tests pasan; se puede crear una tarea, cambiar su prioridad y marcarla como completada.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -80,7 +80,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: RN09, RN10, RN15, RN17, RN18 · HU09
 - **Dependencias**: T05, T06
 - **Criterio de terminado**: todos los tests pasan; el dashboard muestra datos reales y los recordatorios respetan la ventana de 14 días.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -91,7 +91,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: RN19, RN20 · HU10
 - **Dependencias**: T04
 - **Criterio de terminado**: todos los tests pasan; se puede escribir, editar y ver la nota de cada materia.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -102,7 +102,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: todos
 - **Dependencias**: T07, T08
 - **Criterio de terminado**: ningún caso borde produce error inesperado; la colección de Postman está exportada en `docs/postman_collection.json`.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -113,7 +113,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: D02 (decisión de arquitectura)
 - **Dependencias**: T09
 - **Criterio de terminado**: el backend compila y los tests existentes siguen pasando; hay un comentario claro en el código donde se agregará el middleware real.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 

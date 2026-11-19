@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { materiasApi } from '../services/api'
+import { materiasApi, notasApi } from '../services/api'
 import './Materias.css'
 
 const COLORES = [
@@ -21,6 +21,11 @@ export default function Materias() {
   const [editando, setEditando] = useState(null)
   const [form, setForm] = useState({ nombre: '', color: COLORES[0].valor })
   const [formError, setFormError] = useState('')
+
+  // Estado para modal de notas (T08)
+  const [materiaNotas, setMateriaNotas] = useState(null)
+  const [notas, setNotas] = useState([])
+  const [nuevaNota, setNuevaNota] = useState({ titulo: '', contenido: '' })
 
   useEffect(() => {
     cargarMaterias()
@@ -73,7 +78,7 @@ export default function Materias() {
   }
 
   async function eliminar(materia) {
-    if (!confirm(`¿Eliminar la materia "${materia.nombre}"?`)) return
+    if (!confirm(`¿Eliminar la materia "${materia.nombre}" y todos sus datos vinculados?`)) return
     try {
       await materiasApi.delete(materia.id)
       cargarMaterias()
@@ -82,18 +87,59 @@ export default function Materias() {
     }
   }
 
+  // Notas
+  async function abrirNotas(materia) {
+    setMateriaNotas(materia)
+    try {
+      const data = await notasApi.getAll(materia.id)
+      setNotas(data)
+    } catch {
+      setNotas([])
+    }
+  }
+
+  async function agregarNota(e) {
+    e.preventDefault()
+    if (!nuevaNota.titulo.trim()) return
+    try {
+      await notasApi.create({
+        materia_id: materiaNotas.id,
+        titulo: nuevaNota.titulo,
+        contenido: nuevaNota.contenido
+      })
+      setNuevaNota({ titulo: '', contenido: '' })
+      const data = await notasApi.getAll(materiaNotas.id)
+      setNotas(data)
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  async function eliminarNota(id) {
+    try {
+      await notasApi.delete(id)
+      const data = await notasApi.getAll(materiaNotas.id)
+      setNotas(data)
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
   if (loading) return <p className="loading">Cargando...</p>
 
   return (
     <div className="materias-page">
       <div className="page-header">
-        <h1>📖 Materias</h1>
+        <div>
+          <h1>📖 Materias</h1>
+          <p className="subtitle">Gestioná tus asignaturas y sus apuntes/notas</p>
+        </div>
         <button className="btn btn-primary" onClick={abrirFormNuevo}>+ Nueva materia</button>
       </div>
 
       {error && <p className="error-msg">{error}</p>}
 
-      {/* Modal formulario */}
+      {/* Modal formulario Materia */}
       {showForm && (
         <div className="modal-overlay" onClick={cerrarForm}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -137,6 +183,52 @@ export default function Materias() {
         </div>
       )}
 
+      {/* Modal de Notas (T08) */}
+      {materiaNotas && (
+        <div className="modal-overlay" onClick={() => setMateriaNotas(null)}>
+          <div className="modal modal-large" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>📝 Apuntes de {materiaNotas.nombre}</h2>
+              <button className="btn btn-secondary btn-sm" onClick={() => setMateriaNotas(null)}>✕</button>
+            </div>
+
+            <form onSubmit={agregarNota} className="nueva-nota-form">
+              <input
+                type="text"
+                placeholder="Título del apunte o apunte rápido..."
+                value={nuevaNota.titulo}
+                onChange={e => setNuevaNota({ ...nuevaNota, titulo: e.target.value })}
+                required
+              />
+              <textarea
+                placeholder="Contenido de la nota / enlaces / bibliografía..."
+                rows="3"
+                value={nuevaNota.contenido}
+                onChange={e => setNuevaNota({ ...nuevaNota, contenido: e.target.value })}
+              />
+              <button type="submit" className="btn btn-primary btn-sm">+ Agregar Apunte</button>
+            </form>
+
+            <div className="notas-listado">
+              {notas.length === 0 ? (
+                <p className="empty-notice">No hay notas registradas para esta materia aún.</p>
+              ) : (
+                notas.map(n => (
+                  <div key={n.id} className="nota-card card">
+                    <div className="nota-header">
+                      <strong>{n.titulo}</strong>
+                      <button className="btn btn-danger btn-sm" onClick={() => eliminarNota(n.id)}>🗑️</button>
+                    </div>
+                    {n.contenido && <p className="nota-contenido">{n.contenido}</p>}
+                    <span className="nota-fecha">{n.creado_en}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Lista de materias */}
       {materias.length === 0 ? (
         <div className="empty-state">
@@ -152,8 +244,15 @@ export default function Materias() {
                 <span className="materia-nombre">{m.nombre}</span>
               </div>
               <div className="materia-actions">
-                <button className="btn btn-secondary" onClick={() => abrirFormEditar(m)}>Editar</button>
-                <button className="btn btn-danger" onClick={() => eliminar(m)}>Eliminar</button>
+                <button className="btn btn-secondary btn-sm" onClick={() => abrirNotas(m)} title="Ver notas y apuntes">
+                  📑 Notas
+                </button>
+                <button className="btn btn-secondary btn-sm" onClick={() => abrirFormEditar(m)}>
+                  ✏️
+                </button>
+                <button className="btn btn-danger btn-sm" onClick={() => eliminar(m)}>
+                  🗑️
+                </button>
               </div>
             </div>
           ))}

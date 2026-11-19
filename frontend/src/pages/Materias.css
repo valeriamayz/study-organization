@@ -69,7 +69,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,13 +80,64 @@
 .modal {
   background: var(--color-white);
   border-radius: var(--radius-lg);
-  padding: var(--space-8);
+  padding: var(--space-6);
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   box-shadow: var(--shadow-lg);
 }
 
-.modal h2 { margin-bottom: var(--space-6); }
+.modal-large {
+  max-width: 580px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.nueva-nota-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--color-bg);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+.notas-listado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.nota-card {
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nota-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nota-contenido {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  white-space: pre-wrap;
+}
+
+.nota-fecha {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-soft);
+}
 
 .form-actions {
   display: flex;
@@ -95,7 +146,6 @@
   margin-top: var(--space-4);
 }
 
-/* Empty state */
 .empty-state {
   text-align: center;
   padding: var(--space-12);

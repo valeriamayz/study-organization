@@ -29,7 +29,13 @@ app.use('/api/tareas', tareasRouter)
 app.use('/api/notas', notasRouter)
 app.use('/api/dashboard', dashboardRouter)
 
-// Ruta de prueba
+// Ruta de prueba y seed
+const seedData = require('./seed')
+app.get('/api/seed', (req, res) => {
+  seedData(db)
+  res.json({ status: 'ok', message: 'Datos de prueba cargados correctamente 🌱' })
+})
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Study Organization API funcionando 🚀' })
 })

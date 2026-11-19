@@ -10,7 +10,8 @@ export default function Evaluaciones() {
   const [materias, setMaterias] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [filtro, setFiltro] = useState('todas') // 'todas', 'proximas', 'rendidas'
+  const [modoVista, setModoVista] = useState('tablero') // 'tablero' o 'lista'
+  const [filtro, setFiltro] = useState('todas')
 
   const [showModal, setShowModal] = useState(false)
   const [editando, setEditando] = useState(null)
@@ -46,14 +47,14 @@ export default function Evaluaciones() {
     }
   }
 
-  function abrirModalNuevo() {
+  function abrirModalNuevo(estadoPredefinido = 'Pendiente') {
     setEditando(null)
     setForm({
       materia_id: materias[0]?.id || '',
       titulo: '',
       fecha: new Date().toISOString().split('T')[0],
       tipo: 'Parcial',
-      estado: 'Pendiente',
+      estado: estadoPredefinido,
       notas: ''
     })
     setFormError('')
@@ -122,15 +123,31 @@ export default function Evaluaciones() {
       <div className="page-header">
         <div>
           <h1>📝 Evaluaciones y Entregas</h1>
-          <p className="subtitle">Fechas de exámenes, entregas y parciales</p>
+          <p className="subtitle">Seguimiento de fechas de examen, parciales y entregas prácticas</p>
         </div>
-        <button
-          className="btn btn-primary"
-          onClick={abrirModalNuevo}
-          disabled={materias.length === 0}
-        >
-          + Nueva evaluación
-        </button>
+        <div className="header-actions">
+          <div className="vista-selector">
+            <button
+              className={`btn-vista ${modoVista === 'tablero' ? 'active' : ''}`}
+              onClick={() => setModoVista('tablero')}
+            >
+              📋 Tablero
+            </button>
+            <button
+              className={`btn-vista ${modoVista === 'lista' ? 'active' : ''}`}
+              onClick={() => setModoVista('lista')}
+            >
+              🗂️ Lista
+            </button>
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => abrirModalNuevo()}
+            disabled={materias.length === 0}
+          >
+            + Nueva evaluación
+          </button>
+        </div>
       </div>
 
       {materias.length === 0 && (
@@ -141,70 +158,127 @@ export default function Evaluaciones() {
 
       {error && <p className="error-msg">{error}</p>}
 
-      {/* Filtros */}
-      <div className="filtros-bar">
-        <button
-          className={`filtro-btn ${filtro === 'todas' ? 'active' : ''}`}
-          onClick={() => setFiltro('todas')}
-        >
-          Todas ({evaluaciones.length})
-        </button>
-        <button
-          className={`filtro-btn ${filtro === 'proximas' ? 'active' : ''}`}
-          onClick={() => setFiltro('proximas')}
-        >
-          ⏳ Próximas ({evaluaciones.filter(e => e.estado !== 'Rendido/Entregado').length})
-        </button>
-        <button
-          className={`filtro-btn ${filtro === 'rendidas' ? 'active' : ''}`}
-          onClick={() => setFiltro('rendidas')}
-        >
-          ✅ Finalizadas ({evaluaciones.filter(e => e.estado === 'Rendido/Entregado').length})
-        </button>
-      </div>
+      {/* MODO TABLERO KANBAN */}
+      {modoVista === 'tablero' ? (
+        <div className="kanban-tablero">
+          {ESTADOS.map(estado => {
+            const evalsEnEstado = evaluaciones.filter(e => e.estado === estado)
+            return (
+              <div key={estado} className={`kanban-columna columna-${estado.toLowerCase().replace(/[\/\s]/g, '-')}`}>
+                <div className="kanban-col-header">
+                  <h3>{estado}</h3>
+                  <span className="kanban-count">{evalsEnEstado.length}</span>
+                </div>
 
-      {/* Grid de Evaluaciones */}
-      {evaluacionesFiltradas.length === 0 ? (
-        <div className="empty-state card">
-          <p>No hay evaluaciones para mostrar en este filtro.</p>
-        </div>
-      ) : (
-        <div className="evals-grid">
-          {evaluacionesFiltradas.map(ev => (
-            <div key={ev.id} className="eval-card card" style={{ borderTop: `4px solid ${ev.materia_color || '#A9D6F5'}` }}>
-              <div className="eval-header">
-                <span className="eval-materia-badge" style={{ backgroundColor: ev.materia_color + '40', color: '#111' }}>
-                  {ev.materia_nombre}
-                </span>
-                <span className="eval-tipo">{ev.tipo}</span>
-              </div>
+                <div className="kanban-cards">
+                  {evalsEnEstado.map(ev => (
+                    <div
+                      key={ev.id}
+                      className="kanban-card card"
+                      style={{ borderLeft: `5px solid ${ev.materia_color || '#A9D6F5'}` }}
+                    >
+                      <div className="eval-header">
+                        <span className="eval-materia-badge" style={{ backgroundColor: (ev.materia_color || '#A9D6F5') + '40' }}>
+                          {ev.materia_nombre}
+                        </span>
+                        <span className="eval-tipo">{ev.tipo}</span>
+                      </div>
 
-              <h3 className="eval-titulo">{ev.titulo}</h3>
+                      <h4 className="kanban-titulo">{ev.titulo}</h4>
+                      <span className="eval-fecha">📅 {ev.fecha}</span>
 
-              <div className="eval-meta">
-                <span className="eval-fecha">📅 {ev.fecha}</span>
-              </div>
+                      {ev.notas && <p className="eval-notas">{ev.notas}</p>}
 
-              {ev.notas && <p className="eval-notas">"{ev.notas}"</p>}
-
-              <div className="eval-footer">
-                <select
-                  className={`estado-select estado-${ev.estado.toLowerCase().replace(/[\/\s]/g, '-')}`}
-                  value={ev.estado}
-                  onChange={(e) => cambiarEstado(ev, e.target.value)}
-                >
-                  {ESTADOS.map(est => (
-                    <option key={est} value={est}>{est}</option>
+                      <div className="kanban-card-footer">
+                        <select
+                          className="estado-select-mini"
+                          value={ev.estado}
+                          onChange={(e) => cambiarEstado(ev, e.target.value)}
+                        >
+                          {ESTADOS.map(est => (
+                            <option key={est} value={est}>Mover a: {est}</option>
+                          ))}
+                        </select>
+                        <div className="eval-actions">
+                          <button className="btn btn-secondary btn-sm" onClick={() => abrirModalEditar(ev)}>✏️</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => eliminar(ev)}>🗑️</button>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </select>
 
-                <div className="eval-actions">
-                  <button className="btn btn-secondary btn-sm" onClick={() => abrirModalEditar(ev)}>✏️</button>
-                  <button className="btn btn-danger btn-sm" onClick={() => eliminar(ev)}>🗑️</button>
+                  <button
+                    className="btn-add-kanban"
+                    onClick={() => abrirModalNuevo(estado)}
+                  >
+                    + Agregar {estado.toLowerCase()}
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
+        </div>
+      ) : (
+        /* MODO LISTA / GRID */
+        <div>
+          <div className="filtros-bar">
+            <button
+              className={`filtro-btn ${filtro === 'todas' ? 'active' : ''}`}
+              onClick={() => setFiltro('todas')}
+            >
+              Todas ({evaluaciones.length})
+            </button>
+            <button
+              className={`filtro-btn ${filtro === 'proximas' ? 'active' : ''}`}
+              onClick={() => setFiltro('proximas')}
+            >
+              ⏳ Próximas ({evaluaciones.filter(e => e.estado !== 'Rendido/Entregado').length})
+            </button>
+            <button
+              className={`filtro-btn ${filtro === 'rendidas' ? 'active' : ''}`}
+              onClick={() => setFiltro('rendidas')}
+            >
+              ✅ Finalizadas ({evaluaciones.filter(e => e.estado === 'Rendido/Entregado').length})
+            </button>
+          </div>
+
+          <div className="evals-grid">
+            {evaluacionesFiltradas.map(ev => (
+              <div key={ev.id} className="eval-card card" style={{ borderTop: `4px solid ${ev.materia_color || '#A9D6F5'}` }}>
+                <div className="eval-header">
+                  <span className="eval-materia-badge" style={{ backgroundColor: (ev.materia_color || '#A9D6F5') + '40', color: '#111' }}>
+                    {ev.materia_nombre}
+                  </span>
+                  <span className="eval-tipo">{ev.tipo}</span>
+                </div>
+
+                <h3 className="eval-titulo">{ev.titulo}</h3>
+
+                <div className="eval-meta">
+                  <span className="eval-fecha">📅 {ev.fecha}</span>
+                </div>
+
+                {ev.notas && <p className="eval-notas">"{ev.notas}"</p>}
+
+                <div className="eval-footer">
+                  <select
+                    className={`estado-select estado-${ev.estado.toLowerCase().replace(/[\/\s]/g, '-')}`}
+                    value={ev.estado}
+                    onChange={(e) => cambiarEstado(ev, e.target.value)}
+                  >
+                    {ESTADOS.map(est => (
+                      <option key={est} value={est}>{est}</option>
+                    ))}
+                  </select>
+
+                  <div className="eval-actions">
+                    <button className="btn btn-secondary btn-sm" onClick={() => abrirModalEditar(ev)}>✏️</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => eliminar(ev)}>🗑️</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

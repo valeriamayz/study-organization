@@ -24,17 +24,21 @@ export default function Home() {
 
   if (loading) return <p className="loading">Cargando tu organizador...</p>
 
-  const { metricas, proximasEvaluaciones, tareasUrgentes } = data || {
-    metricas: { totalMaterias: 0, totalEvaluacionesProximas: 0, totalTareasPendientes: 0 },
+  const { metricas, proximasEvaluaciones, tareasUrgentes, materias } = data || {
+    metricas: { totalMaterias: 0, totalEvaluacionesProximas: 0, totalTareasPendientes: 0, totalTareasCompletadas: 0 },
     proximasEvaluaciones: [],
-    tareasUrgentes: []
+    tareasUrgentes: [],
+    materias: []
   }
+
+  const totalTareas = (metricas.totalTareasPendientes || 0) + (metricas.totalTareasCompletadas || 0)
+  const porcentajeProgreso = totalTareas > 0 ? Math.round((metricas.totalTareasCompletadas / totalTareas) * 100) : 0
 
   return (
     <div className="home-dashboard">
       <div className="dashboard-welcome">
         <h1>👋 ¡Hola! Tu resumen de estudio</h1>
-        <p className="subtitle">Mantené al día tus entregas, parciales y tareas</p>
+        <p className="subtitle">Mantené al día tus entregas, parciales y tareas en un solo lugar</p>
       </div>
 
       {/* Métricas destacadas */}
@@ -56,7 +60,7 @@ export default function Home() {
         </Link>
 
         <Link to="/tareas" className="metrica-card card">
-          <span className="metrica-icon">⚡</span>
+          <span className="metrica-icon">✅</span>
           <div className="metrica-content">
             <span className="metrica-numero">{metricas.totalTareasPendientes}</span>
             <span className="metrica-label">Tareas pendientes</span>
@@ -64,12 +68,44 @@ export default function Home() {
         </Link>
       </div>
 
+      {/* Barra de Progreso de Tareas */}
+      {totalTareas > 0 && (
+        <div className="progreso-card card">
+          <div className="progreso-header">
+            <span>🎯 <strong>Progreso de Tareas:</strong> {metricas.totalTareasCompletadas} de {totalTareas} completadas</span>
+            <span className="progreso-porcentaje">{porcentajeProgreso}%</span>
+          </div>
+          <div className="barra-fondo">
+            <div className="barra-llenado" style={{ width: `${porcentajeProgreso}%` }}></div>
+          </div>
+        </div>
+      )}
+
+      {/* Accesos directos a Materias con su color */}
+      {materias && materias.length > 0 && (
+        <div className="materias-chips-container">
+          <span className="chips-label">Tus materias:</span>
+          <div className="materias-chips">
+            {materias.map(m => (
+              <Link
+                key={m.id}
+                to="/materias"
+                className="materia-chip"
+                style={{ borderLeft: `4px solid ${m.color}`, backgroundColor: m.color + '25' }}
+              >
+                {m.nombre}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="dashboard-columns">
         {/* Próximas Evaluaciones */}
         <section className="dashboard-section card">
           <div className="section-header">
-            <h2>📅 Próximas Fechas</h2>
-            <Link to="/evaluaciones" className="ver-mas">Ver todas →</Link>
+            <h2>📅 Próximas Fechas (14 días)</h2>
+            <Link to="/evaluaciones" className="ver-mas">Ver tablero →</Link>
           </div>
 
           {proximasEvaluaciones.length === 0 ? (
@@ -84,7 +120,7 @@ export default function Home() {
                   </div>
                   <div className="fecha-dia">
                     <span>{ev.fecha}</span>
-                    <span className="badge badge-pendiente">{ev.estado}</span>
+                    <span className={`badge badge-${ev.estado.toLowerCase().replace(/[\/\s]/g, '-')}`}>{ev.estado}</span>
                   </div>
                 </div>
               ))}
@@ -95,8 +131,8 @@ export default function Home() {
         {/* Tareas Urgentes */}
         <section className="dashboard-section card">
           <div className="section-header">
-            <h2>🚨 Tareas Urgentes</h2>
-            <Link to="/tareas" className="ver-mas">Gestionar →</Link>
+            <h2>🚨 Tareas Urgentes de la Semana</h2>
+            <Link to="/tareas" className="ver-mas">Gestionar to-do →</Link>
           </div>
 
           {tareasUrgentes.length === 0 ? (
@@ -105,9 +141,9 @@ export default function Home() {
             <div className="tareas-urgentes-lista">
               {tareasUrgentes.map(t => (
                 <div key={t.id} className="tarea-urgente-item">
-                  <span className={`prioridad-dot prioridad-${t.prioridad.toLowerCase()}`} />
+                  <span className={`prioridad-dot prioridad-${t.prioridad.toLowerCase()}`} title={`Prioridad ${t.prioridad}`} />
                   <span className="tarea-urgente-titulo">{t.titulo}</span>
-                  {t.fecha_limite && <span className="tarea-urgente-fecha">{t.fecha_limite}</span>}
+                  {t.fecha_limite && <span className="tarea-urgente-fecha">📅 {t.fecha_limite}</span>}
                 </div>
               ))}
             </div>

@@ -1,0 +1,9 @@
+---
+description: Reglas para el Agente Frontend
+globs: frontend/**/*
+---
+# Rol: Desarrollador Frontend
+- Construye la interfaz de usuario en React con Vite.
+- Aplica diseño mobile-first y estética Notion limpia y minimalista.
+- Consume los endpoints de la API centralizados en `services/api.js`.
+- Maneja estados de carga, estados vacíos y feedback de error.

@@ -124,7 +124,7 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: —
 - **Dependencias**: T10
 - **Criterio de terminado**: la URL de Netlify es pública, el backend en Render responde, y la app se ve bien en móvil.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`
 
 ---
 
@@ -135,4 +135,4 @@ Estados: `[ ]` = pendiente · `[x]` = hecha · `[-]` = en curso
 - **RN/HU**: —
 - **Dependencias**: T11
 - **Criterio de terminado**: el README tiene el enlace público y se puede seguir para levantar el proyecto desde cero.
-- **Estado**: `[ ]`
+- **Estado**: `[x]`

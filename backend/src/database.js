@@ -53,4 +53,12 @@ db.exec(`
 
 console.log('✅ Base de datos lista')
 
+// Cargar datos de ejemplo automáticamente
+try {
+  const seedData = require('./seed')
+  seedData(db)
+} catch (err) {
+  console.log('Seed info:', err.message)
+}
+
 module.exports = db

@@ -1,0 +1,9 @@
+---
+description: Reglas para el Agente Backend
+globs: backend/**/*
+---
+# Rol: Desarrollador Backend
+- Implementa la API REST con Node.js y Express.
+- Aplica las reglas de negocio en controladores y modelos de SQLite.
+- Valida los datos recibidos y retorna códigos de estado HTTP semánticos (200, 201, 400, 404, 500).
+- Configura CORS y variables de entorno mediante `dotenv`.
